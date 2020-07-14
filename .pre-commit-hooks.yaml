@@ -1,0 +1,5 @@
+- id: motoinsight_frontend_lint
+  name: Motoinsight Front-End Lint
+  entry: motoinsight-lint
+  language: node
+  args: []
