@@ -1,21 +1,28 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-const childProcess = require('child_process');
+const fs = require('fs');
 const path = require('path');
 const { ESLint } = require('eslint');
+const prettier = require('prettier');
 const stylelint = require('stylelint');
 const globby = require('globby');
+
+const prettierBaseConfig = require('./prettier-config-default');
 
 function getConfig() {
   const config = {
     fix: false,
+    verbose: false,
     paths: [],
   };
   for (const arg of process.argv.slice(2)) {
     switch (arg) {
       case '--fix':
         config.fix = true;
+        break;
+      case '--verbose':
+        config.verbose = true;
         break;
       default:
         if (arg[0] === '-') {
@@ -35,10 +42,17 @@ function filterPaths(paths, supporterExtensions) {
   });
 }
 
+function showFilesToCheck(files) {
+  console.log('Files to check:');
+  files.forEach(item => console.log(`- ${item}`));
+}
+
 async function runESLint(config) {
   // Create an instance.
   const eslint = new ESLint({
-    baseConfig: require('./eslint-config-default'),
+    baseConfig: {
+      extends: ['plugin:@motoinsight/eslint-plugin-default/recommended'],
+    },
     extensions: ['.js', '.vue'],
     fix: config.fix,
   });
@@ -56,7 +70,9 @@ async function runESLint(config) {
   const resultText = formatter.format(results);
 
   // Output it.
-  console.log(resultText);
+  if (resultText) {
+    console.log(resultText);
+  }
 
   return {
     errorsCount: results
@@ -74,7 +90,9 @@ async function runStylelint(config) {
   });
 
   // Output results.
-  console.log(results.output);
+  if (results.output) {
+    console.log(results.output);
+  }
 
   return {
     errorsCount:
@@ -84,30 +102,44 @@ async function runStylelint(config) {
 }
 
 function runPrettier(config) {
-  return new Promise((resolve, reject) => {
-    // keep track of whether callback has been invoked to prevent multiple invocations
-    let invoked = false;
-    const args = [config.fix ? '--write' : '-c', ...config.files];
-    const process = childProcess.fork(require.resolve('prettier/bin-prettier'), args);
-
-    // listen for errors as they may prevent the exit event from firing
-    process.on('error', err => {
-      if (invoked) {
-        return;
+  const result = {
+    errorsCount: 0,
+  };
+  const filesToFormat = [];
+  for (const filePath of config.files) {
+    const { inferredParser } = prettier.getFileInfo.sync(filePath);
+    if (!inferredParser) {
+      continue;
+    }
+    const prettierConfig = {
+      ...prettierBaseConfig,
+      ...(prettier.resolveConfig.sync(filePath) || {}),
+      parser: inferredParser,
+    };
+    try {
+      const source = fs.readFileSync(filePath, 'utf-8');
+      if (config.fix) {
+        const formatted = prettier.format(source, prettierConfig);
+        if (source !== formatted) {
+          fs.writeFileSync(filePath, formatted, { encoding: 'utf-8' });
+        }
+      } else {
+        const formatted = prettier.check(source, prettierConfig);
+        if (!formatted) {
+          result.errorsCount++;
+          filesToFormat.push(filePath);
+        }
       }
-      invoked = true;
-      reject(err);
-    });
-
-    // execute the callback once the process has finished running
-    process.on('exit', code => {
-      if (invoked) {
-        return;
-      }
-      invoked = true;
-      resolve({ errorsCount: code === 0 ? 0 : 1 });
-    });
-  });
+    } catch (e) {
+      console.log(`Error during processing ${filePath}`);
+      console.log(e.message);
+    }
+  }
+  if (filesToFormat.length) {
+    console.log('Files require formatting:');
+    filesToFormat.forEach(item => console.log(`- ${item}`));
+  }
+  return result;
 }
 
 (async () => {
@@ -116,7 +148,10 @@ function runPrettier(config) {
     if (!config.paths.length) {
       config.paths.push('**');
     }
-    const allFiles = globby.sync(config.paths, { gitignore: true, ignore: ['./node_modules/**', '**/node_modules/**'] });
+    const allFiles = globby.sync(config.paths, {
+      gitignore: true,
+      ignore: ['./node_modules/**', '**/node_modules/**'],
+    });
 
     let hasErrors = false;
 
@@ -124,9 +159,14 @@ function runPrettier(config) {
     try {
       const files = filterPaths(allFiles, ['.js', '.vue']);
       if (files.length) {
+        if (config.verbose) {
+          showFilesToCheck(files);
+        }
         const eslintResult = await runESLint({ fix: config.fix, files });
         if (eslintResult.errorsCount) {
           hasErrors = true;
+        } else {
+          console.log('No errors found');
         }
       } else {
         console.log('No files to check');
@@ -139,9 +179,14 @@ function runPrettier(config) {
     try {
       const files = filterPaths(allFiles, ['.vue', '.css', '.scss']);
       if (files.length) {
+        if (config.verbose) {
+          showFilesToCheck(files);
+        }
         const stylelintResult = await runStylelint({ fix: config.fix, files });
         if (stylelintResult.errorsCount) {
           hasErrors = true;
+        } else {
+          console.log('No errors found');
         }
       } else {
         console.log('No files to check');
@@ -159,7 +204,8 @@ function runPrettier(config) {
         '.graphql',
         '.gql',
         '.html',
-        '.js',
+        // *.js files are handled by ESLint
+        // '.js',
         '.jsx',
         '.json',
         '.md',
@@ -169,14 +215,20 @@ function runPrettier(config) {
         '.mdx',
         '.ts',
         '.tsx',
-        '.vue',
+        // *.vue files are handled by ESLint
+        // '.vue',
         '.yaml',
         '.yml',
       ]);
       if (files.length) {
+        if (config.verbose) {
+          showFilesToCheck(files);
+        }
         const prettierResult = await runPrettier({ fix: config.fix, files });
         if (prettierResult.errorsCount) {
           hasErrors = true;
+        } else {
+          console.log('No errors found');
         }
       } else {
         console.log('No files to check');
@@ -188,7 +240,6 @@ function runPrettier(config) {
       console.log('\nErrors found. Please fix them.');
       process.exit(1);
     } else {
-      console.log('\nNo errors found.');
       process.exit(0);
     }
   } catch (e) {

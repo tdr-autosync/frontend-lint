@@ -1,0 +1,35 @@
+{
+  "name": "@motoinsight/eslint-plugin-default",
+  "version": "0.0.2-alpha.5",
+  "description": "Motoinsight ESLint plugin",
+  "author": "Motoinsight",
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "files": [
+    "eslint-config-recommended.js",
+    "index.js"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.unhaggle.com/"
+  },
+  "devDependencies": {
+    "babel-eslint": "10.1.0",
+    "eslint": "7.4.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-jest": "23.18.0",
+    "eslint-plugin-nuxt": "1.0.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-simple-import-sort": "5.0.3",
+    "eslint-plugin-vue": "6.2.2"
+  },
+  "peerDependencies": {
+    "babel-eslint": "10.1.0",
+    "eslint": "7.4.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-jest": "23.18.0",
+    "eslint-plugin-nuxt": "1.0.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-simple-import-sort": "5.0.3",
+    "eslint-plugin-vue": "6.2.2"
+  }
+}

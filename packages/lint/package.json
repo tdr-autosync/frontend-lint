@@ -1,0 +1,37 @@
+{
+  "name": "@motoinsight/lint",
+  "version": "0.0.2-alpha.5",
+  "description": "Preset for linting",
+  "author": "Motoinsight",
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "cli.js",
+    "prettier-config-default.js",
+    "stylelint-config-default.js"
+  ],
+  "bin": {
+    "motoinsight-lint": "./cli.js"
+  },
+  "publishConfig": {
+    "registry": "https://npm.unhaggle.com/"
+  },
+  "dependencies": {
+    "@motoinsight/eslint-plugin-default": "^0.0.2-alpha.5",
+    "babel-eslint": "10.1.0",
+    "eslint": "7.4.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-jest": "23.18.0",
+    "eslint-plugin-nuxt": "1.0.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-simple-import-sort": "5.0.3",
+    "eslint-plugin-vue": "6.2.2",
+    "globby": "11.0.1",
+    "prettier": "2.0.5",
+    "stylelint": "13.6.1",
+    "stylelint-config-rational-order": "0.1.2",
+    "stylelint-config-recommended": "3.0.0",
+    "stylelint-scss": "3.18.0"
+  }
+}

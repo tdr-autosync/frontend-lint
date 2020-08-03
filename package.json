@@ -1,32 +1,27 @@
 {
-  "name": "@motoinsight/lint",
+  "name": "lint",
   "version": "1.0.0",
   "description": "Preset for linting",
   "author": "Motoinsight",
   "license": "UNLICENSED",
-  "bin": {
-    "motoinsight-lint": "./cli.js"
+  "private": true,
+  "devDependencies": {
+    "lerna": "3.22.1",
+    "@motoinsight/lint": "file:packages/lint"
   },
-  "dependencies": {
-    "babel-eslint": "10.1.0",
-    "eslint": "7.4.0",
-    "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-jest": "23.18.0",
-    "eslint-plugin-nuxt": "1.0.0",
-    "eslint-plugin-prettier": "3.1.4",
-    "eslint-plugin-simple-import-sort": "5.0.3",
-    "eslint-plugin-vue": "6.2.2",
-    "globby": "11.0.1",
-    "prettier": "2.0.5",
-    "stylelint": "13.6.1",
-    "stylelint-config-rational-order": "0.1.2",
-    "stylelint-config-recommended": "3.0.0",
-    "stylelint-scss": "3.18.0"
+  "resolutions": {
+    "@motoinsight/eslint-plugin-default": "file:packages/eslint-plugin-default"
   },
-  "prettier": "./prettier-config-default.js",
+  "prettier": "@motoinsight/lint/prettier-config-default",
   "eslintConfig": {
+    "root": true,
     "extends": [
-      "./eslint-config-default.js"
+      "plugin:@motoinsight/eslint-plugin-default/recommended"
+    ]
+  },
+  "stylelint": {
+    "extends": [
+      "@motoinsight/lint/stylelint-config-default"
     ]
   }
 }
