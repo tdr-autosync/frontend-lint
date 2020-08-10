@@ -12,7 +12,7 @@ module.exports = {
     'plugin:jest/recommended',
     'plugin:nuxt/recommended',
     'plugin:vue/recommended',
-    'plugin:prettier/recommended',
+    'prettier',
     'prettier/vue',
   ],
   plugins: ['simple-import-sort'],

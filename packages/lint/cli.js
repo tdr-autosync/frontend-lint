@@ -1,23 +1,30 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
 
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
+const globby = require('globby');
 const { ESLint } = require('eslint');
 const prettier = require('prettier');
 const stylelint = require('stylelint');
-const globby = require('globby');
 
-const prettierBaseConfig = require('./prettier-config-default');
+function logLine(msg = '') {
+  process.stdout.write(`${msg}\n`);
+}
 
 function getConfig() {
   const config = {
+    // TODO Support this flag
+    errorsOnly: false,
     fix: false,
     verbose: false,
     paths: [],
   };
   for (const arg of process.argv.slice(2)) {
     switch (arg) {
+      case '--errors-only':
+        config.fix = true;
+        break;
       case '--fix':
         config.fix = true;
         break;
@@ -26,7 +33,7 @@ function getConfig() {
         break;
       default:
         if (arg[0] === '-') {
-          console.error(`Unknown argument: ${arg}`);
+          logLine(`Unknown argument: ${arg}`);
           process.exit(1);
         }
         config.paths.push(arg);
@@ -42,23 +49,36 @@ function filterPaths(paths, supporterExtensions) {
   });
 }
 
-function showFilesToCheck(files) {
-  console.log('Files to check:');
-  files.forEach(item => console.log(`- ${item}`));
-}
-
 async function runESLint(config) {
-  // Create an instance.
-  const eslint = new ESLint({
-    baseConfig: {
-      extends: ['plugin:@motoinsight/eslint-plugin-default/recommended'],
-    },
+  // Create an instance with the default config.
+  const eslintDefault = new ESLint({
+    overrideConfigFile: require.resolve(
+      '@motoinsight/eslint-plugin-default/eslint-config-recommended',
+    ),
     extensions: ['.js', '.vue'],
     fix: config.fix,
   });
 
+  // Create an instance with a user provided config.
+  const eslint = new ESLint({
+    extensions: ['.js', '.vue'],
+    fix: config.fix,
+  });
+
+  const results = [];
+
   // Lint files.
-  const results = await eslint.lintFiles(config.files);
+  for (const filePath of config.files) {
+    if (config.verbose) {
+      logLine(chalk.gray(`- ${filePath}`));
+    }
+    const fileConfig = await eslint.calculateConfigForFile(filePath);
+    const hasUserConfig = Object.keys(fileConfig.rules).length > 0;
+    const fileResults = hasUserConfig
+      ? await eslint.lintFiles(filePath)
+      : await eslintDefault.lintFiles(filePath);
+    results.push(...fileResults);
+  }
 
   // Modify the files with the fixed code.
   if (config.fix) {
@@ -71,51 +91,80 @@ async function runESLint(config) {
 
   // Output it.
   if (resultText) {
-    console.log(resultText);
+    logLine(resultText);
   }
 
-  return {
-    errorsCount: results
-      .map(result => result.errorCount + result.warningCount)
-      .reduce((a, b) => a + b),
-  };
+  return results.every(result => result.errorCount === 0 && result.warningCount === 0);
 }
+
+const styleLintBaseConfig = require('./stylelint-config-default');
 
 async function runStylelint(config) {
-  // Lint files.
-  const results = await stylelint.lint({
-    files: config.files,
-    fix: config.fix,
-    formatter: 'string',
-  });
+  const linter = stylelint.createLinter();
+  const results = [];
 
-  // Output results.
-  if (results.output) {
-    console.log(results.output);
+  // Lint files.
+  for (const filePath of config.files) {
+    if (config.verbose) {
+      logLine(chalk.gray(`- ${filePath}`));
+    }
+    let options;
+    try {
+      await linter.getConfigForFile(filePath);
+      options = {
+        files: filePath,
+        fix: config.fix,
+      };
+    } catch (e) {
+      if (e.message.includes('No configuration provided')) {
+        options = {
+          config: styleLintBaseConfig,
+          files: filePath,
+          fix: config.fix,
+        };
+      } else {
+        throw e;
+      }
+    }
+    const fileResults = await stylelint.lint(options);
+    results.push(...fileResults.results);
   }
 
-  return {
-    errorsCount:
-      Number(results.errored) +
-      results.results.map(result => result.warnings.length).reduce((a, b) => a + b),
-  };
+  // Output results.
+  if (results.length) {
+    const output = stylelint.formatters.string(results);
+    if (output) {
+      logLine(output);
+    }
+  }
+
+  return results.every(result => !result.errored);
 }
 
+const prettierBaseConfig = require('./prettier-config-default');
+
 function runPrettier(config) {
-  const result = {
-    errorsCount: 0,
-  };
+  let result = true;
   const filesToFormat = [];
+
+  // Check files.
   for (const filePath of config.files) {
+    if (config.verbose) {
+      logLine(chalk.gray(`- ${filePath}`));
+    }
+
+    // Try to detect a format of a file.
     const { inferredParser } = prettier.getFileInfo.sync(filePath);
     if (!inferredParser) {
       continue;
     }
+
+    // Prepare a config
     const prettierConfig = {
-      ...prettierBaseConfig,
-      ...(prettier.resolveConfig.sync(filePath) || {}),
+      ...(prettier.resolveConfig.sync(filePath) || prettierBaseConfig),
       parser: inferredParser,
     };
+
     try {
       const source = fs.readFileSync(filePath, 'utf-8');
       if (config.fix) {
@@ -126,123 +175,88 @@ function runPrettier(config) {
       } else {
         const formatted = prettier.check(source, prettierConfig);
         if (!formatted) {
-          result.errorsCount++;
+          result = false;
           filesToFormat.push(filePath);
         }
       }
     } catch (e) {
-      console.log(`Error during processing ${filePath}`);
-      console.log(e.message);
+      logLine(chalk.red(`Error during processing ${filePath}`));
+      logLine(chalk.red(e.message));
+      throw e;
     }
   }
+
+  // Output results.
   if (filesToFormat.length) {
-    console.log('Files require formatting:');
-    filesToFormat.forEach(item => console.log(`- ${item}`));
+    logLine(chalk.redBright('Files require formatting:'));
+    filesToFormat.forEach(item => logLine(chalk.redBright(`- ${item}`)));
   }
+
   return result;
+}
+
+async function runLinter({ name, fn, config, allFiles, extensions }) {
+  logLine(`Running ${name}...`);
+  const files = extensions ? filterPaths(allFiles, extensions) : allFiles;
+  if (!files.length) {
+    logLine(chalk.yellowBright('No files to check\n'));
+    return true;
+  }
+  const result = await fn({ ...config, files });
+  if (result) {
+    logLine(chalk.greenBright('No errors found\n'));
+    return true;
+  }
+  return false;
+}
+
+async function main() {
+  const config = getConfig();
+  if (!config.paths.length) {
+    config.paths.push('**');
+  }
+
+  const allFiles = globby.sync(config.paths, {
+    gitignore: true,
+    ignore: ['./node_modules/**', '**/node_modules/**'],
+  });
+
+  const eslintSuccess = await runLinter({
+    name: 'ESLint',
+    fn: runESLint,
+    config,
+    allFiles,
+    extensions: ['.js', '.vue'],
+  });
+
+  const stylelintSuccess = await runLinter({
+    name: 'StyleLint',
+    fn: runStylelint,
+    config,
+    allFiles,
+    extensions: ['.vue', '.css', '.scss'],
+  });
+
+  const prettierSuccess = await runLinter({
+    name: 'Prettier',
+    fn: runPrettier,
+    config,
+    allFiles,
+  });
+
+  if (!eslintSuccess || !stylelintSuccess || !prettierSuccess) {
+    logLine(chalk.red('\nErrors found. Please fix them.'));
+    process.exit(1);
+  } else {
+    process.exit(0);
+  }
 }
 
 (async () => {
   try {
-    const config = getConfig();
-    if (!config.paths.length) {
-      config.paths.push('**');
-    }
-    const allFiles = globby.sync(config.paths, {
-      gitignore: true,
-      ignore: ['./node_modules/**', '**/node_modules/**'],
-    });
-
-    let hasErrors = false;
-
-    console.log('\nRunning ESLint...');
-    try {
-      const files = filterPaths(allFiles, ['.js', '.vue']);
-      if (files.length) {
-        if (config.verbose) {
-          showFilesToCheck(files);
-        }
-        const eslintResult = await runESLint({ fix: config.fix, files });
-        if (eslintResult.errorsCount) {
-          hasErrors = true;
-        } else {
-          console.log('No errors found');
-        }
-      } else {
-        console.log('No files to check');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    console.log('\nRunning StyleLint...');
-    try {
-      const files = filterPaths(allFiles, ['.vue', '.css', '.scss']);
-      if (files.length) {
-        if (config.verbose) {
-          showFilesToCheck(files);
-        }
-        const stylelintResult = await runStylelint({ fix: config.fix, files });
-        if (stylelintResult.errorsCount) {
-          hasErrors = true;
-        } else {
-          console.log('No errors found');
-        }
-      } else {
-        console.log('No files to check');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    console.log('\nRunning Prettier...');
-    try {
-      const files = filterPaths(allFiles, [
-        '.css',
-        '.less',
-        '.scss',
-        '.graphql',
-        '.gql',
-        '.html',
-        // *.js files are handled by ESLint
-        // '.js',
-        '.jsx',
-        '.json',
-        '.md',
-        '.markdown',
-        '.mdown',
-        '.mkdn',
-        '.mdx',
-        '.ts',
-        '.tsx',
-        // *.vue files are handled by ESLint
-        // '.vue',
-        '.yaml',
-        '.yml',
-      ]);
-      if (files.length) {
-        if (config.verbose) {
-          showFilesToCheck(files);
-        }
-        const prettierResult = await runPrettier({ fix: config.fix, files });
-        if (prettierResult.errorsCount) {
-          hasErrors = true;
-        } else {
-          console.log('No errors found');
-        }
-      } else {
-        console.log('No files to check');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    if (hasErrors) {
-      console.log('\nErrors found. Please fix them.');
-      process.exit(1);
-    } else {
-      process.exit(0);
-    }
+    await main();
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     process.exit(1);
   }

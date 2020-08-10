@@ -2,19 +2,48 @@
 
 This repo contains configurations for tools which are used to lint front-end files.
 
-## Installation
+## Table of contents
 
-First install the package and remove manually installed packages if any.
+- [Usage](#usage)
+- [Installation](#installation)
+- [Adding IDE support](#adding-ide-support)
+- [Adding `yarn lint` command support](#adding-yarn-lint-command-support)
+- [Adding pre-commit support](#adding-pre-commit-support)
+- [Overriding rules](#overriding-rules)
+- [Technical details](#technical-details)
 
-<!-- installationCommand -->
+## Usage
 
 ```bash
-yarn add -D @motoinsight/lint && yarn remove babel-eslint eslint eslint-config-prettier eslint-plugin-jest eslint-plugin-nuxt eslint-plugin-prettier eslint-plugin-simple-import-sort eslint-plugin-vue prettier stylelint stylelint-config-rational-order stylelint-config-recommended stylelint-scss
+yarn motoinsight-lint [options] [file/dir/glob ...]
 ```
 
-<!-- /installationCommand -->
+Following command line options are supported:
 
-Add the following text to `package.json` root object:
+| Option      | Description             |
+| ----------- | ----------------------- |
+| `--fix`     | Fix all fixable errors. |
+| `--verbose` | Show detailed output.   |
+
+## Installation
+
+First install the package.
+
+```bash
+yarn add -D @motoinsight/lint
+```
+
+If there are any eslint, stylelint or prettier related packages, remove them.
+
+```bash
+yarn remove <eslint-related> <stylelint-related> <prettier-related>
+```
+
+If there are any eslint, stylelint or prettier related configuration files, remove them too.
+
+## Adding IDE support
+
+To add IDE support for all used linters, add the following text to `package.json` root object:
 
 ```json
   "prettier": "@motoinsight/lint/prettier-config-default",
@@ -31,53 +60,45 @@ Add the following text to `package.json` root object:
   }
 ```
 
-Add the following text to `package.json` scripts section:
+## Adding `yarn lint` command support
+
+To be able to run linters with `yarn lint`, add the following text to `package.json` scripts section:
 
 ```json
-    "lint": "yarn motoinsight-lint"
+    "lint": "motoinsight-lint"
 ```
+
+## Adding pre-commit support
 
 To add a support for "pre-commit" please add the following text to `.pre-commit-config.yaml`:
 
-<!-- pre-commit -->
-
-TODO: provide real repo
-
 ```yml
-- repo: /home/serhii/ulint
+- repo: https://github.com/unhaggle/frontend-lint
   rev: v1.0.0
   hooks:
     - id: motoinsight_frontend_lint
 ```
 
-<!-- /pre-commit -->
-
 ## Overriding rules
+
+### Overriding ESLint rules
 
 TODO
 
-## Details
+### Overriding StyleLint rules
+
+TODO
+
+### Overriding Prettier rules
+
+TODO
+
+## Technical details
 
 This tool uses ESLint, StyleLint and Prettier under the hood.
 
-Following files are getting checked:
+ESLint checks `.js` and `.vue` files.
 
-- .css
-- .less
-- .scss
-- .graphql
-- .gql
-- .html
-- .js
-- .jsx
-- .json
-- .md
-- .markdown
-- .mdown
-- .mkdn
-- .mdx
-- .ts
-- .tsx
-- .vue
-- .yaml
-- .yml
+StyleLint checks `.vue`, `.css` and `.scss` files.
+
+Prettier checks all files.

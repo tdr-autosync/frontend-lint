@@ -935,12 +935,13 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@motoinsight/eslint-plugin-default@file:packages/eslint-plugin-default":
-  version "0.0.1"
+"@motoinsight/eslint-plugin-default@^0.0.2-alpha.5", "@motoinsight/eslint-plugin-default@file:packages/eslint-plugin-default":
+  version "0.0.2-alpha.5"
 
 "@motoinsight/lint@file:packages/lint":
-  version "0.0.1"
+  version "0.0.2-alpha.5"
   dependencies:
+    "@motoinsight/eslint-plugin-default" "^0.0.2-alpha.5"
     babel-eslint "10.1.0"
     eslint "7.4.0"
     eslint-config-prettier "6.11.0"

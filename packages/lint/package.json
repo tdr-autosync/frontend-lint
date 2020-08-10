@@ -1,6 +1,6 @@
 {
   "name": "@motoinsight/lint",
-  "version": "0.0.2-alpha.5",
+  "version": "0.0.2-alpha.6",
   "description": "Preset for linting",
   "author": "Motoinsight",
   "license": "UNLICENSED",
@@ -18,8 +18,9 @@
     "registry": "https://npm.unhaggle.com/"
   },
   "dependencies": {
-    "@motoinsight/eslint-plugin-default": "^0.0.2-alpha.5",
+    "@motoinsight/eslint-plugin-default": "0.0.2-alpha.6",
     "babel-eslint": "10.1.0",
+    "chalk": "4.1.0",
     "eslint": "7.4.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-jest": "23.18.0",
