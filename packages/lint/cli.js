@@ -8,38 +8,70 @@ const { ESLint } = require('eslint');
 const prettier = require('prettier');
 const stylelint = require('stylelint');
 
+const globalConfig = {
+  errorsOnly: false,
+  fix: false,
+  verbose: false,
+  paths: [],
+};
+
 function logLine(msg = '') {
   process.stdout.write(`${msg}\n`);
 }
 
+function logNormal(msg = '') {
+  if (!globalConfig.errorsOnly) {
+    logLine(msg);
+  }
+}
+
+function logVerbose(msg = '') {
+  if (!globalConfig.errorsOnly && globalConfig.verbose) {
+    logLine(chalk.gray(msg));
+  }
+}
+
+function logSuccess(msg) {
+  if (!globalConfig.errorsOnly) {
+    logLine(chalk.greenBright(msg));
+  }
+}
+
+function logWarning(msg) {
+  if (!globalConfig.errorsOnly) {
+    logLine(chalk.yellowBright(msg));
+  }
+}
+
+function logError(msg) {
+  logLine(chalk.redBright(msg));
+}
+
+function logCriticalError(msg) {
+  logLine(chalk.red(msg));
+}
+
 function getConfig() {
-  const config = {
-    // TODO Support this flag
-    errorsOnly: false,
-    fix: false,
-    verbose: false,
-    paths: [],
-  };
   for (const arg of process.argv.slice(2)) {
     switch (arg) {
       case '--errors-only':
-        config.fix = true;
+        globalConfig.errorsOnly = true;
         break;
       case '--fix':
-        config.fix = true;
+        globalConfig.fix = true;
         break;
       case '--verbose':
-        config.verbose = true;
+        globalConfig.verbose = true;
         break;
       default:
         if (arg[0] === '-') {
-          logLine(`Unknown argument: ${arg}`);
+          logCriticalError(`Unknown argument: ${arg}`);
           process.exit(1);
         }
-        config.paths.push(arg);
+        globalConfig.paths.push(arg);
     }
   }
-  return config;
+  return globalConfig;
 }
 
 function filterPaths(paths, supporterExtensions) {
@@ -63,14 +95,16 @@ async function runESLint(config) {
   const eslint = new ESLint({
     extensions: ['.js', '.vue'],
     fix: config.fix,
+    reportUnusedDisableDirectives: 'error',
   });
 
   const results = [];
 
   // Lint files.
   for (const filePath of config.files) {
-    if (config.verbose) {
-      logLine(chalk.gray(`- ${filePath}`));
+    logVerbose(`- ${filePath}`);
+    if (await eslint.isPathIgnored(filePath)) {
+      continue;
     }
     const fileConfig = await eslint.calculateConfigForFile(filePath);
     const hasUserConfig = Object.keys(fileConfig.rules).length > 0;
@@ -105,8 +139,9 @@ async function runStylelint(config) {
 
   // Lint files.
   for (const filePath of config.files) {
-    if (config.verbose) {
-      logLine(chalk.gray(`- ${filePath}`));
+    logVerbose(`- ${filePath}`);
+    if (await linter.isPathIgnored(filePath)) {
+      continue;
     }
     let options;
     try {
@@ -149,13 +184,13 @@ function runPrettier(config) {
 
   // Check files.
   for (const filePath of config.files) {
-    if (config.verbose) {
-      logLine(chalk.gray(`- ${filePath}`));
-    }
+    logVerbose(`- ${filePath}`);
 
     // Try to detect a format of a file.
-    const { inferredParser } = prettier.getFileInfo.sync(filePath);
-    if (!inferredParser) {
+    const { inferredParser, ignored } = prettier.getFileInfo.sync(filePath, {
+      ignorePath: '.prettierignore',
+    });
+    if (!inferredParser || ignored) {
       continue;
     }
 
@@ -180,31 +215,31 @@ function runPrettier(config) {
         }
       }
     } catch (e) {
-      logLine(chalk.red(`Error during processing ${filePath}`));
-      logLine(chalk.red(e.message));
+      logCriticalError(`Error during processing ${filePath}`);
+      logCriticalError(e.message);
       throw e;
     }
   }
 
   // Output results.
   if (filesToFormat.length) {
-    logLine(chalk.redBright('Files require formatting:'));
-    filesToFormat.forEach(item => logLine(chalk.redBright(`- ${item}`)));
+    logError('Files require formatting:');
+    filesToFormat.forEach(item => logError(`- ${item}`));
   }
 
   return result;
 }
 
 async function runLinter({ name, fn, config, allFiles, extensions }) {
-  logLine(`Running ${name}...`);
+  logNormal(`Running ${name}...`);
   const files = extensions ? filterPaths(allFiles, extensions) : allFiles;
   if (!files.length) {
-    logLine(chalk.yellowBright('No files to check\n'));
+    logWarning('No files to check\n');
     return true;
   }
   const result = await fn({ ...config, files });
   if (result) {
-    logLine(chalk.greenBright('No errors found\n'));
+    logSuccess('No errors found\n');
     return true;
   }
   return false;
@@ -245,7 +280,9 @@ async function main() {
   });
 
   if (!eslintSuccess || !stylelintSuccess || !prettierSuccess) {
-    logLine(chalk.red('\nErrors found. Please fix them.'));
+    if (!globalConfig.errorsOnly) {
+      logCriticalError('\nErrors found. Please fix them.');
+    }
     process.exit(1);
   } else {
     process.exit(0);

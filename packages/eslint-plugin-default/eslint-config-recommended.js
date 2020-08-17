@@ -94,15 +94,6 @@ module.exports = {
     // disallow function declarations that contain unsafe references inside loop statements
     'no-loop-func': 'error',
 
-    // disallow magic numbers
-    'no-magic-numbers': [
-      'error',
-      {
-        ignore: [-1, 0, 1, 2],
-        ignoreArrayIndexes: true,
-      },
-    ],
-
     // disallow multiline strings
     'no-multi-str': 'error',
 
