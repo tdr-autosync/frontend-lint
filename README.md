@@ -43,6 +43,10 @@ yarn remove <eslint-related> <stylelint-related> <prettier-related>
 
 If there are any eslint, stylelint or prettier related configuration files, remove them too.
 
+```bash
+find . \( -name "*eslintrc*" -or -name "*stylelintrc*" -or -name "*prettierrc*" \) -not -path "*node_modules*"
+```
+
 ## Adding IDE support
 
 To add IDE support for all used linters, add the following text to `package.json` root object:
@@ -75,7 +79,7 @@ To be able to run linters with `yarn lint`, add the following text to `package.j
 To add a support for "pre-commit" please add the following text to `.pre-commit-config.yaml`:
 
 ```yml
-- repo: https://github.com/unhaggle/frontend-lint
+- repo: git@github.com:unhaggle/frontend-lint.git
   rev: v1.0.0 # Check the latest version in GitHub.
   hooks:
     - id: motoinsight_frontend_lint
