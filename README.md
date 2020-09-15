@@ -1,12 +1,11 @@
 # Shared linters configurations
 
-This repo contains configurations for tools which are used to lint front-end files.
+This repo contains configurations for tools which are used to lint front-end files. If you have any questions or suggestions please contact Serhii Petkun.
 
 ## Table of contents
 
 - [Usage](#usage)
 - [Installation](#installation)
-- [Adding IDE support](#adding-ide-support)
 - [Adding `yarn lint` command support](#adding-yarn-lint-command-support)
 - [Adding pre-commit support](#adding-pre-commit-support)
 - [Ignoring files](#ignoring-files)
@@ -29,12 +28,6 @@ Following command line options are supported:
 
 ## Installation
 
-First install the package.
-
-```bash
-yarn add -D @motoinsight/lint
-```
-
 If there are any eslint, stylelint or prettier related packages, remove them.
 
 ```bash
@@ -47,9 +40,23 @@ If there are any eslint, stylelint or prettier related configuration files, remo
 find . \( -name "*eslintrc*" -or -name "*stylelintrc*" -or -name "*prettierrc*" \) -not -path "*node_modules*"
 ```
 
-## Adding IDE support
+Install the package.
 
-To add IDE support for all used linters, add the following text to `package.json` root object:
+```bash
+yarn add -D @motoinsight/lint
+```
+
+<details>
+  <summary>In case of an error</summary>
+  
+  ### Error: An unexpected error occurred: "https://registry.yarnpkg.com/@motoinsight%2flint: Not found".
+  Make sure that file `.npmrc` which is located in the same folder as `package.json` contains the following line:
+  ```
+  @motoinsight:registry=https://npm.unhaggle.com/
+  ```
+</details>
+
+Add the following text to `package.json` root object:
 
 ```json
   "prettier": "@motoinsight/lint/prettier-config-default",
@@ -76,7 +83,9 @@ To be able to run linters with `yarn lint`, add the following text to `package.j
 
 ## Adding pre-commit support
 
-To add a support for "pre-commit" please add the following text to `.pre-commit-config.yaml`:
+To add a support for "pre-commit" please remove from `.pre-commit-config.yaml` existing eslint, stylelint or prettier related rules first.
+
+Then add the following text to `.pre-commit-config.yaml`:
 
 ```yml
 - repo: git@github.com:unhaggle/frontend-lint.git
