@@ -22,6 +22,9 @@ module.exports = {
 
     // Require classes to match the following expression
     'selector-class-pattern': ['^[A-Z][A-Za-z0-9]+(?:-[a-z][A-Za-z0-9]+)?$|^m-[a-z][A-Za-z0-9]+$'],
+    
+    // Disallow unknown pseudo-element selectors
+    'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: ["v-deep"] }],
 
     // Require properties to be ordered
     'plugin/rational-order': [
