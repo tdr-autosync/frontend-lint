@@ -158,11 +158,9 @@ module.exports = {
     'consistent-this': ['error', 'self'],
 
     // enforce a maximum depth that blocks can be nested
-    // eslint-disable-next-line no-magic-numbers
     'max-depth': ['error', 4],
 
     // enforce a maximum depth that callbacks can be nested
-    // eslint-disable-next-line no-magic-numbers
     'max-nested-callbacks': ['error', 4],
 
     // require constructor names to begin with a capital letter
