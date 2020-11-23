@@ -95,7 +95,6 @@ async function runESLint(config) {
   const eslint = new ESLint({
     extensions: ['.js', '.vue'],
     fix: config.fix,
-    reportUnusedDisableDirectives: 'error',
   });
 
   const results = [];
