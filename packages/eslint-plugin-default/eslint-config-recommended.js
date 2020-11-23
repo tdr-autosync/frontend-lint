@@ -16,6 +16,7 @@ module.exports = {
     'prettier/vue',
   ],
   plugins: ['simple-import-sort'],
+  reportUnusedDisableDirectives: true,
   rules: {
     // disallow the use of `console`
     'no-console': 'error',
@@ -214,18 +215,18 @@ module.exports = {
     // require template literals instead of string concatenation
     'prefer-template': 'error',
 
+    'jest/no-deprecated-functions': 'off',
+
     // Forbids using hyphenated attribute names on custom components in Vue templates.
     'vue/attribute-hyphenation': ['error', 'never'],
 
-    // Enforce the component name property to Pascal case.
-    'vue/name-property-casing': ['error', 'PascalCase'],
+    'vue/component-definition-name-casing': ['error', 'PascalCase'],
 
     // This rule enforce proper casing of props in vue components (camelCase).
     // Off because autofix will break the app.
     'vue/prop-name-casing': ['off', 'camelCase'],
 
-    // Enforce order of attributes
-    'vue/attributes-order': 'error',
+    'vue/component-tags-order': ['error', { order: ['template', 'script', 'style'] }],
 
     // Allow 'v-html' attribute
     'vue/no-v-html': 'off',
@@ -233,10 +234,26 @@ module.exports = {
     // Enforce component tag names to pascal case. E.g. <CoolComponent>.
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
 
-    'vue/component-definition-name-casing': ['error', 'PascalCase'],
-
     // The rule is to enforce the HTML standard of always defaulting boolean attributes to false
     'vue/no-boolean-default': 'error',
+
+    'vue/no-duplicate-attr-inheritance': 'error',
+
+    'vue/no-empty-component-block': 'error',
+
+    'vue/no-multiple-objects-in-class': 'error',
+
+    'vue/no-potential-component-option-typo': 'error',
+
+    'vue/no-static-inline-styles': 'error',
+
+    'vue/no-unused-properties': 'error',
+
+    'vue/no-useless-v-bind': 'error',
+
+    'vue/padding-line-between-blocks': 'error',
+
+    'vue/require-name-property': 'error',
 
     'vue/no-deprecated-scope-attribute': 'error',
 
@@ -244,18 +261,12 @@ module.exports = {
 
     'vue/no-deprecated-slot-scope-attribute': 'error',
 
-    'vue/no-static-inline-styles': 'error',
-
-    'vue/require-direct-export': 'error',
-
-    'vue/require-name-property': 'error',
-
     'vue/v-slot-style': 'error',
 
     'vue/valid-v-bind-sync': 'error',
 
     'vue/valid-v-slot': 'error',
 
-    'simple-import-sort/sort': 'error',
+    'simple-import-sort/imports': 'error',
   },
 };
