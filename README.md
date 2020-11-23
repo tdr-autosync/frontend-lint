@@ -171,3 +171,23 @@ ESLint checks `.js` and `.vue` files.
 StyleLint checks `.vue`, `.css` and `.scss` files.
 
 Prettier checks all files.
+
+### Publishing a new version
+
+New version must be published from `master` branch, make sure all needed pull requests are merged
+into `develop`.
+
+```bash
+git checkout master && git pull && git fetch origin develop:develop && git merge develop
+yarn lerna version --exact major # minor, patch and other are available as well
+yarn lerna publish from-package
+git checkout develop && git pull && git merge master && git push
+```
+
+If you need to publish prerelease version or a hot fix, which should not be used as the latest
+version, you can use following commands. Publishing can be done from any branch.
+
+```bash
+yarn lerna version --exact premajor # preminor, prepatch and other are available as well
+yarn lerna publish from-package --dist-tag develop # Use ticket number or a branch name
+```
