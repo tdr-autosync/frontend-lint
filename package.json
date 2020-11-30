@@ -19,6 +19,11 @@
   "resolutions": {
     "@motoinsight/eslint-plugin-default": "file:packages/eslint-plugin-default"
   },
+  "engines": {
+    "node": "^12.4.0",
+    "npm": "^6.14.0",
+    "yarn": "^1.15.2"
+  },
   "prettier": "@motoinsight/lint/prettier-config-default",
   "eslintConfig": {
     "root": true,
