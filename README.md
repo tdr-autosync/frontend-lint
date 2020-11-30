@@ -179,7 +179,7 @@ into `develop`.
 
 ```bash
 git checkout master && git pull && git fetch origin develop:develop && git merge develop
-yarn lerna version --exact major # minor, patch and other are available as well
+yarn lerna version --exact --force-publish=* major # minor, patch and other are available as well
 yarn lerna publish from-package
 git checkout develop && git pull && git merge master && git push
 ```
