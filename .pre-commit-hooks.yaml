@@ -2,4 +2,5 @@
   name: Motoinsight Front-End Lint
   entry: motoinsight-lint
   language: node
-  args: ['--errors-only']
+  args: ['--errors-only', '--fix']
+  additional_dependencies: ['@motoinsight/lint@2.0.2']

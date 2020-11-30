@@ -5,19 +5,8 @@
   "author": "Motoinsight",
   "license": "UNLICENSED",
   "private": true,
-  "scripts": {
-    "lint": "motoinsight-lint"
-  },
-  "bin": {
-    "motoinsight-lint": "./packages/lint/cli.js"
-  },
   "devDependencies": {
-    "@motoinsight/eslint-plugin-default": "file:packages/eslint-plugin-default",
-    "@motoinsight/lint": "file:packages/lint",
     "lerna": "3.22.1"
-  },
-  "resolutions": {
-    "@motoinsight/eslint-plugin-default": "file:packages/eslint-plugin-default"
   },
   "engines": {
     "node": ">=12.4.0",
