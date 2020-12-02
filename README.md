@@ -54,6 +54,12 @@ yarn add -D @motoinsight/lint
   ```
   @motoinsight:registry=https://npm.unhaggle.com/
   ```
+
+  ### npm ERR! 404  '@motoinsight/lint@2.0.2' is not in the npm registry.
+  To fix this error just add the following line to `~/.npmrc`:
+  ```
+  @motoinsight:registry=https://npm.unhaggle.com/
+  ```
 </details>
 
 Add the following text to `package.json` root object:
