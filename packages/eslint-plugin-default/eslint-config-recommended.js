@@ -15,7 +15,7 @@ module.exports = {
     'prettier',
     'prettier/vue',
   ],
-  plugins: ['simple-import-sort'],
+  plugins: ['@motoinsight/eslint-plugin-default', 'simple-import-sort'],
   reportUnusedDisableDirectives: true,
   rules: {
     // disallow the use of `console`
