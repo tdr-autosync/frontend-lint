@@ -12,6 +12,9 @@
   "publishConfig": {
     "registry": "https://npm.unhaggle.com/"
   },
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "babel-eslint": "10.1.0",
     "eslint": "7.14.0",
@@ -20,7 +23,9 @@
     "eslint-plugin-nuxt": "2.0.0",
     "eslint-plugin-prettier": "3.1.4",
     "eslint-plugin-simple-import-sort": "6.0.1",
-    "eslint-plugin-vue": "7.1.0"
+    "eslint-plugin-vue": "7.1.0",
+    "jest": "26.6.3",
+    "vue-eslint-parser": "7.2.0"
   },
   "peerDependencies": {
     "babel-eslint": "10.1.0",
