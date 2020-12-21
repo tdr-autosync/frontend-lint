@@ -3,4 +3,4 @@
   entry: motoinsight-lint
   language: node
   args: ['--errors-only', '--fix']
-  additional_dependencies: ['@motoinsight/lint@2.0.2']
+  additional_dependencies: ['@motoinsight/lint@2.1.0']
