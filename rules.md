@@ -1,6 +1,6 @@
 ## "require-qa-class" rule
 
-This rule requires qa-\* CSS classes to be provided class on specific HTML elements.
+This rule requires qa-\* CSS classes to be provided class on specific HTML elements and to follow [naming conventions](https://motocommerce.atlassian.net/wiki/spaces/QA/pages/1386971151/How+to+work+with+qa-+CSS+classes).
 
 ## Usage
 
