@@ -16,9 +16,12 @@ tester.run('require-qa-class', rule, {
     '<template><input class="qa-btn" type="text" /></template>',
     '<template><button class="qa-btn"></button></template>',
     '<template><button :class="[\'qa-btn\']"></button></template>',
-    '<template><button :class="[`qa-${value}`]"></button></template>',
+    '<template><button :class="[`qa-btn-${value}`]"></button></template>',
     '<template><button :class="{ \'qa-btn\': value }"></button></template>',
-    '<template><button :class="{ [`qa-${value}`]: value }"></button></template>',
+    '<template><button :class="{ [`qa-btn-${value}`]: value }"></button></template>',
+    '<template><button class="qa-camelCase"></button></template>',
+    '<template><button class="qa-multiple-sections"></button></template>',
+    '<template><button class="Btn qa-multipleClasses"></button></template>',
     {
       code: '<template><button></button></template>',
       options: [
@@ -80,6 +83,14 @@ tester.run('require-qa-class', rule, {
     },
     {
       code: '<template><button :class="value"></button></template>',
+      errors: [errorMessage],
+    },
+    {
+      code: '<template><button class="qa-WRONG_CASE"></button></template>',
+      errors: [errorMessage],
+    },
+    {
+      code: '<template><button class="qa-wrongStructure-"></button></template>',
       errors: [errorMessage],
     },
   ],

@@ -1,12 +1,12 @@
 const utils = require('eslint-plugin-vue/lib/utils');
 
 function checkLiteral(value) {
-  return /(?:^|\s)qa-[a-z0-9_-]+/.test(value);
+  return /(?:^|\s)qa(?:-[a-z0-9][a-zA-Z0-9]*)+(?:$|\s)/.test(value);
 }
 
 function checkTemplateExpression(expression) {
   return expression.quasis.some(element =>
-    /(?:^|\s)qa-(?:$|[a-z0-9_-]+)/.test(element.value.cooked),
+    /(?:^|\s)qa(?:-[a-z0-9][a-zA-Z0-9]*)+(?:$|\s|-$)/.test(element.value.cooked),
   );
 }
 
