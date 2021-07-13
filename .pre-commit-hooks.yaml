@@ -4,3 +4,4 @@
   language: node
   args: ['--errors-only', '--fix']
   additional_dependencies: ['@motoinsight/lint@2.1.0']
+  types_or: [javascript, vue, css, scss, json]
