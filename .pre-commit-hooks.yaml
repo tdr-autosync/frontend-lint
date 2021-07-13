@@ -4,4 +4,4 @@
   language: node
   args: ['--errors-only', '--fix']
   additional_dependencies: ['@motoinsight/lint@2.1.0']
-  types_or: [javascript, vue, css, scss, json]
+  files: '\.css$|\.htm$|\.html$|\.html.hl$|\.js$|\.js.flow$|\.jsb$|\.jscad$|\.jsfl$|\.jsm$|\.json$|\.json5$|\.jsonl$|\.jss$|\.jsx$|\.less$|\.markdown$|\.md$|\.mdown$|\.mdwn$|\.mdx$|\.mjml$|\.mjs$|\.mkd$|\.mkdn$|\.mkdown$|\.njs$|\.pcss$|\.postcss$|\.scss$|\.sjs$|\.ssjs$|\.ts$|\.tsx$|\.vue$|\.xht$|\.xhtml$|\.xsjs$|\.xsjslib$|\.yaml$|\.yml$|\.yml.mysql$'
