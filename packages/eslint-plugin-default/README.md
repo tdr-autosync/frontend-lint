@@ -1,1 +1,0 @@
-# Motoinsight ESLint plugin
