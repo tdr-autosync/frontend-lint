@@ -96,8 +96,8 @@ To add a support for "pre-commit" please remove from `.pre-commit-config.yaml` e
 Then add the following text to `.pre-commit-config.yaml`:
 
 ```yml
-- repo: git@github.com:unhaggle/frontend-lint.git
-  rev: v1.0.0 # Check the latest version in GitHub.
+- repo: https://github.com/unhaggle/frontend-lint.git
+  rev: v3.0.0 # Check the latest version in GitHub.
   hooks:
     - id: motoinsight_frontend_lint
 ```
