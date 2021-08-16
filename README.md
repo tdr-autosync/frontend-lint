@@ -45,24 +45,8 @@ find . \( -name "*eslintrc*" -or -name "*stylelintrc*" -or -name "*prettierrc*" 
 Install the package.
 
 ```bash
-yarn add -D @motoinsight/lint
+yarn add -D https://github.com/unhaggle/frontend-lint.git#v3.0.0
 ```
-
-<details>
-  <summary>In case of an error</summary>
-  
-  ### Error: An unexpected error occurred: "https://registry.yarnpkg.com/@motoinsight%2flint: Not found".
-  Make sure that file `.npmrc` which is located in the same folder as `package.json` contains the following line:
-  ```
-  @motoinsight:registry=https://npm.unhaggle.com/
-  ```
-
-  ### npm ERR! 404  '@motoinsight/lint@2.0.2' is not in the npm registry.
-  To fix this error just add the following line to `~/.npmrc`:
-  ```
-  @motoinsight:registry=https://npm.unhaggle.com/
-  ```
-</details>
 
 Add the following text to `package.json` root object:
 
