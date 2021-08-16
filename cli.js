@@ -85,7 +85,7 @@ async function runESLint(config) {
   // Create an instance with the default config.
   const eslintDefault = new ESLint({
     overrideConfigFile: require.resolve(
-      '@motoinsight/eslint-plugin-default/eslint-config-recommended',
+      '@motoinsight/eslint-plugin-motoinsight/eslint-config-recommended',
     ),
     extensions: ['.js', '.vue'],
     fix: config.fix,

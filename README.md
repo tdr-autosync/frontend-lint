@@ -1,4 +1,6 @@
-# Shared linters configurations
+# Motoinsight Frontend Linter
+
+Maintainer: Serhii Petkun
 
 This repo contains configurations for tools which are used to lint front-end files. If you have any questions or suggestions please contact Serhii Petkun.
 
@@ -69,7 +71,7 @@ Add the following text to `package.json` root object:
   "eslintConfig": {
     "root": true,
     "extends": [
-      "plugin:@motoinsight/eslint-plugin-default/recommended"
+      "plugin:@motoinsight/eslint-plugin-motoinsight/recommended"
     ]
   },
   "stylelint": {
@@ -116,7 +118,7 @@ Our goal is use a consistent code style, please override rules only when there i
    ```js
    module.exports = {
      root: true,
-     extends: ['plugin:@motoinsight/eslint-plugin-default/recommended'],
+     extends: ['plugin:@motoinsight/eslint-plugin-motoinsight/recommended'],
      rules: {
        // Rules to override
      },
@@ -180,20 +182,4 @@ Prettier checks all files.
 
 ### Publishing a new version
 
-New version must be published from `master` branch, make sure all needed pull requests are merged
-into `develop`.
-
-```bash
-git checkout master && git pull && git fetch origin develop:develop && git merge develop
-yarn lerna version --exact --force-publish=* major # minor, patch and other are available as well
-yarn lerna publish from-package
-git checkout develop && git pull && git merge master && git push
-```
-
-If you need to publish prerelease version or a hot fix, which should not be used as the latest
-version, you can use following commands. Publishing can be done from any branch.
-
-```bash
-yarn lerna version --exact premajor # preminor, prepatch and other are available as well
-yarn lerna publish from-package --dist-tag develop # Use ticket number or a branch name
-```
+New versions are published as git tags. Version tag format is `v0.0.0`.
