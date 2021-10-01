@@ -87,13 +87,13 @@ async function runESLint(config) {
     overrideConfigFile: require.resolve(
       '@motoinsight/eslint-plugin-motoinsight/eslint-config-recommended',
     ),
-    extensions: ['.js', '.vue'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
     fix: config.fix,
   });
 
   // Create an instance with a user provided config.
   const eslint = new ESLint({
-    extensions: ['.js', '.vue'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
     fix: config.fix,
   });
 
@@ -102,11 +102,24 @@ async function runESLint(config) {
   // Lint files.
   for (const filePath of config.files) {
     logVerbose(`- ${filePath}`);
-    if (await eslint.isPathIgnored(filePath)) {
-      continue;
+    try {
+      if (await eslint.isPathIgnored(filePath)) {
+        continue;
+      }
+    } catch (e) {
+      if (!e.message.includes('No ESLint configuration found')) {
+        throw e;
+      }
     }
-    const fileConfig = await eslint.calculateConfigForFile(filePath);
-    const hasUserConfig = Object.keys(fileConfig.rules).length > 0;
+    let hasUserConfig = false;
+    try {
+      const fileConfig = await eslint.calculateConfigForFile(filePath);
+      hasUserConfig = Object.keys(fileConfig.rules).length > 0;
+    } catch (e) {
+      if (!e.message.includes('No ESLint configuration found')) {
+        throw e;
+      }
+    }
     const fileResults = hasUserConfig
       ? await eslint.lintFiles(filePath)
       : await eslintDefault.lintFiles(filePath);
@@ -260,7 +273,7 @@ async function main() {
     fn: runESLint,
     config,
     allFiles,
-    extensions: ['.js', '.vue'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
   });
 
   const stylelintSuccess = await runLinter({

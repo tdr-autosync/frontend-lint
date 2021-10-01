@@ -15,22 +15,29 @@
     "motoinsight-lint": "./cli.js"
   },
   "dependencies": {
-    "@motoinsight/eslint-plugin-motoinsight": "git+https://github.com/unhaggle/eslint-plugin-motoinsight.git#v3.0.0",
-    "babel-eslint": "10.1.0",
-    "chalk": "4.1.0",
-    "eslint": "7.14.0",
-    "eslint-config-prettier": "6.15.0",
-    "eslint-plugin-jest": "24.1.3",
+    "@motoinsight/eslint-plugin-motoinsight": "git+https://github.com/unhaggle/eslint-plugin-motoinsight.git#v4.0.0",
+    "@typescript-eslint/eslint-plugin": "4.31.0",
+    "@typescript-eslint/parser": "4.31.0",
+    "@vue/eslint-config-typescript": "7.0.0",
+    "chalk": "4.1.2",
+    "eslint": "7.32.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-jest": "24.4.0",
     "eslint-plugin-nuxt": "2.0.0",
-    "eslint-plugin-prettier": "3.1.4",
-    "eslint-plugin-simple-import-sort": "6.0.1",
-    "eslint-plugin-vue": "7.1.0",
-    "globby": "11.0.1",
-    "prettier": "2.2.0",
-    "stylelint": "13.8.0",
-    "stylelint-config-recommended": "3.0.0",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "eslint-plugin-vue": "7.17.0",
+    "globby": "11.0.4",
+    "prettier": "2.3.2",
+    "stylelint": "13.13.1",
+    "stylelint-config-recommended": "5.0.0",
     "stylelint-order": "4.1.0",
-    "stylelint-scss": "3.18.0"
+    "stylelint-scss": "3.20.1"
+  },
+  "devDependencies": {
+    "typescript": "4.4.2"
+  },
+  "peerDependencies": {
+    "typescript": "^4.4.2"
   },
   "prettier": {
     "printWidth": 100,
