@@ -158,7 +158,7 @@ Our goal is use a consistent code style, please override rules only when there i
 
 This tool uses ESLint, StyleLint and Prettier under the hood.
 
-ESLint checks `.js` and `.vue` files.
+ESLint checks `.js`, `.ts` and `.vue` files.
 
 StyleLint checks `.vue`, `.css` and `.scss` files.
 
@@ -166,4 +166,12 @@ Prettier checks all files.
 
 ### Publishing a new version
 
-New versions are published as git tags. Version tag format is `v0.0.0`.
+Versions are published as git tags. Use following commands to publish a new version:
+
+```bash
+git checkout develop
+git fetch
+git reset --hard origin/develop
+yarn version --new-version major
+git push --follow-tags
+```
