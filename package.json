@@ -15,7 +15,7 @@
     "motoinsight-lint": "./cli.js"
   },
   "dependencies": {
-    "@motoinsight/eslint-plugin-motoinsight": "git+https://github.com/unhaggle/eslint-plugin-motoinsight.git#v3.0.0",
+    "@motoinsight/eslint-plugin-motoinsight": "github:unhaggle/eslint-plugin-motoinsight#v3.0.0",
     "babel-eslint": "10.1.0",
     "chalk": "4.1.0",
     "eslint": "7.14.0",

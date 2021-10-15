@@ -193,9 +193,9 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@motoinsight/eslint-plugin-motoinsight@git+https://github.com/unhaggle/eslint-plugin-motoinsight.git#v3.0.0":
+"@motoinsight/eslint-plugin-motoinsight@github:unhaggle/eslint-plugin-motoinsight#v3.0.0":
   version "3.0.0"
-  resolved "git+https://github.com/unhaggle/eslint-plugin-motoinsight.git#65c6d60d954dad4491072d29699599df607ff330"
+  resolved "https://codeload.github.com/unhaggle/eslint-plugin-motoinsight/tar.gz/65c6d60d954dad4491072d29699599df607ff330"
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
