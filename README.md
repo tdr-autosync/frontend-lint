@@ -45,7 +45,7 @@ find . \( -name "*eslintrc*" -or -name "*stylelintrc*" -or -name "*prettierrc*" 
 Install the package.
 
 ```bash
-yarn add -D https://github.com/unhaggle/frontend-lint.git#v3.0.0
+yarn add -D github:unhaggle/frontend-lint#v4.0.1
 ```
 
 Add the following text to `package.json` root object:
@@ -81,7 +81,7 @@ Then add the following text to `.pre-commit-config.yaml`:
 
 ```yml
 - repo: https://github.com/unhaggle/frontend-lint.git
-  rev: v3.0.0 # Check the latest version in GitHub.
+  rev: v4.0.1 # Check the latest version in GitHub.
   hooks:
     - id: motoinsight_frontend_lint
 ```

@@ -15,7 +15,7 @@
     "motoinsight-lint": "./cli.js"
   },
   "dependencies": {
-    "@motoinsight/eslint-plugin-motoinsight": "git+https://github.com/unhaggle/eslint-plugin-motoinsight.git#v4.0.0",
+    "@motoinsight/eslint-plugin-motoinsight": "github:unhaggle/eslint-plugin-motoinsight#v4.0.0",
     "@typescript-eslint/eslint-plugin": "4.31.0",
     "@typescript-eslint/parser": "4.31.0",
     "@vue/eslint-config-typescript": "7.0.0",
