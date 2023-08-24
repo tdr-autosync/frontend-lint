@@ -1,6 +1,6 @@
 {
   "name": "@motoinsight/lint",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Motoinsight Frontend Linter",
   "author": "Motoinsight",
   "license": "UNLICENSED",
@@ -15,7 +15,7 @@
     "motoinsight-lint": "./cli.js"
   },
   "dependencies": {
-    "@motoinsight/eslint-plugin-motoinsight": "github:unhaggle/eslint-plugin-motoinsight#v4.0.0",
+    "@motoinsight/eslint-plugin-motoinsight": "4.0.1",
     "@typescript-eslint/eslint-plugin": "4.31.0",
     "@typescript-eslint/parser": "4.31.0",
     "@vue/eslint-config-typescript": "7.0.0",
